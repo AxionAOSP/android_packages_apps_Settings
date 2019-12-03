@@ -249,4 +249,8 @@
     <string name="status_bar_carrier_lock_screen_title">Carrier name on lockscreen</string>
     <string name="status_bar_carrier_lock_screen_summary">Display carrier name on lockscreen status bar</string>
 
+    <!-- Annoying Notifications -->
+    <string name="notification_sound_vib_screen_on_title">Annoying Notifications</string>
+    <string name="notification_sound_vib_screen_on_summary">Play sound and vibration for notifications when screen is on</string>
+
 </resources>
