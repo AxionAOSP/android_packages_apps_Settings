@@ -653,4 +653,7 @@ public class Settings extends SettingsActivity {
         }
     }
     public static class SafetyCenterActivity extends SettingsActivity { }
+
+    // SleepMode
+    public static class SleepModeActivity extends SettingsActivity {}
 }
