@@ -217,4 +217,8 @@
     <string name="status_bar_carrier_lock_screen_title">Carrier name on lockscreen</string>
     <string name="status_bar_carrier_lock_screen_summary">Display carrier name on lockscreen status bar</string>
 
+    <!-- Force LTE_CA -->
+    <string name="force_lte_ca">Force LTE CA</string>
+    <string name="force_lte_ca_summary">Force LTE carrier aggregation to work</string>
+
 </resources>
