@@ -519,4 +519,6 @@ public class Settings extends SettingsActivity {
     
     /** Personalizations Activities **/
     public static class PersonalizationsActivity extends SettingsActivity {}
+
+    public static class DevRunningServicesActivity extends SettingsActivity { /* empty */ }
 }
