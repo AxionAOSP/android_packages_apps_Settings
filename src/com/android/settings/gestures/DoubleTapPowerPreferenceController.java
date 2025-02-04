@@ -46,8 +46,7 @@ public class DoubleTapPowerPreferenceController extends GesturePreferenceControl
     }
 
     private static boolean isGestureAvailable(Context context) {
-        return context.getResources()
-                .getBoolean(com.android.internal.R.bool.config_cameraDoubleTapPowerGestureEnabled);
+        return false;
     }
 
     @Override
