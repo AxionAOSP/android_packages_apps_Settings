@@ -68,6 +68,12 @@
             settings:keywords="@string/keywords_battery_adaptive_preferences" />
     </PreferenceCategory>
 
+    <com.android.settings.preferences.SystemSettingSwitchPreference
+        android:key="persist.sys.power_mode_perf"
+        android:title="@string/performance_mode_title"
+        android:summary="@string/performance_mode_summary"
+        settings:controller="com.android.settings.fuelgauge.PowerModeController" />
+
     <!-- Charging control -->
     <lineageos.preference.LineagePartsPreference
         android:key="charging_control"
