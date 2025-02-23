@@ -74,6 +74,12 @@
         android:summary="@string/performance_mode_summary"
         settings:controller="com.android.settings.fuelgauge.PowerModeController" />
 
+    <com.android.settings.preferences.SystemSettingSwitchPreference
+        android:key="persist.sys.smart_charge_enabled"
+        android:title="@string/battery_health_title"
+        android:summary="@string/battery_health_summary"
+        settings:controller="com.android.settings.fuelgauge.BatteryHealthController" />
+        
     <!-- Charging control -->
     <lineageos.preference.LineagePartsPreference
         android:key="charging_control"
