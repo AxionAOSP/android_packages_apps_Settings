@@ -426,7 +426,7 @@ public class SettingsHomepageActivity extends FragmentActivity implements
     }
     
     private boolean homepageRevamp() {
-        return false;
+        return ActivityEmbeddingUtils.isAlreadyEmbedded(this);
     }
 
     private void updateHomepageUI() {
