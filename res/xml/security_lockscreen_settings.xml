@@ -29,6 +29,12 @@
             settings:keywords="@string/keywords_lock_screen_notif"/>
 
         <Preference
+            android:key="edge_light"
+            android:title="@string/edge_light_title"
+            android:summary="@string/edge_light_summary"
+            android:fragment="com.custom.settings.fragments.EdgeLightSettings" />
+
+        <Preference
             android:key="lockscreen_widgets"
             android:title="@string/lockscreen_widgets_title"
             android:summary="@string/lockscreen_widgets_enabled_summary"
@@ -40,6 +46,12 @@
             android:summary="@string/media_art_summary"
             android:defaultValue="false"
             settings:position="none" />
+
+        <Preference
+            android:key="visualizer"
+            android:title="@string/visualizer_title"
+            android:summary="@string/visualizer_summary"
+            android:fragment="com.custom.settings.fragments.PulseSettings" />
 
         <com.android.settingslib.RestrictedSwitchPreference
             android:key="security_display_lockscreen_bypass"
