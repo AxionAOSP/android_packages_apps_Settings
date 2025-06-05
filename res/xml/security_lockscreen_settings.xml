@@ -208,6 +208,13 @@
             android:defaultValue="false"
             settings:position="none" />
 
+        <com.android.settings.preferences.SystemSettingSwitchPreference
+            android:key="screen_off_aod_enabled"
+            android:title="@string/screen_off_aod_enabled_title"
+            android:summary="@string/screen_off_aod_enabled_summary"
+            android:defaultValue="true"
+            settings:position="none" />
+
         <com.android.settings.preferences.SecureSettingSwitchPreference
             android:key="pulse_on_new_tracks"
             android:title="@string/pulse_on_new_tracks_title"
