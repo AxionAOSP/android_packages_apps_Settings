@@ -3278,6 +3278,7 @@
     <string name="display_white_balance_title">Display white balance</string>
     <!-- Display settings screen, display white balance settings summary [CHAR LIMIT=NONE] -->
     <string name="display_white_balance_summary"></string>
+
     <!-- Display settings screen, setting option name to change Fold setting -->
     <string name="fold_lock_behavior_title">Continue using apps on fold</string>
     <!-- Display settings screen, game default frame rate settings title [CHAR LIMIT=65] -->
