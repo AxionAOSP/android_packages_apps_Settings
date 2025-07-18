@@ -245,6 +245,13 @@
             android:title="@string/emergency_tone_title"
             android:summary="%s"
             android:order="-10"/>
+            
+        <com.android.settings.preferences.SystemSettingSwitchPreference
+            android:key="screenshot_sound_enabled"
+            android:title="@string/screenshot_shutter_sound_title"
+            android:summary="@string/screenshot_shutter_sound_summary"
+            android:defaultValue="true" />
+
     </PreferenceCategory>
 
     <!-- Work profile sound category -->
