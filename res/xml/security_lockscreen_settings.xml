@@ -29,6 +29,13 @@
             android:summary="@string/summary_placeholder"
             settings:keywords="@string/keywords_lock_screen_notif"/>
 
+        <com.android.settings.preferences.SecureSettingSwitchPreference
+            android:key="nt_mistouch_prevention_enable"
+            android:title="@string/nt_mistouch_prevention"
+            android:summary="@string/nt_mistouch_prevention_summary"
+            android:defaultValue="true"
+            settings:position="none" />
+
         <com.android.settings.preferences.SystemSettingSwitchPreference
             android:key="ls_media_art_enabled"
             android:title="@string/media_art_title"
