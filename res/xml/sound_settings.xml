@@ -105,6 +105,12 @@
         settings:keywords="@string/keywords_sounds_and_notifications_interruptions"
         settings:controller="com.android.settings.notification.zen.ZenModePreferenceController"/>
 
+    <com.android.settings.preferences.SystemSettingSwitchPreference
+        android:key="screenshot_sound_enabled"
+        android:title="@string/screenshot_shutter_sound_title"
+        android:summary="@string/screenshot_shutter_sound_summary"
+        android:defaultValue="true" />
+
     <!-- Phone ringtone -->
     <com.android.settings.DefaultRingtonePreference
         android:key="phone_ringtone"
