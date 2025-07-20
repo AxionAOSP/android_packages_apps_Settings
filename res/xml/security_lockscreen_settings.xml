@@ -30,6 +30,12 @@
             android:summary="@string/lockscreen_widgets_enabled_summary"
             android:fragment="com.android.settings.lockscreen.LockScreenWidgets" />
 
+        <Preference
+            android:key="quick_look"
+            android:title="@string/quick_look_title"
+            android:summary="@string/quick_look_summary"
+            android:fragment="com.android.settings.quicklook.QuickLook" />
+
         <com.android.settings.RestrictedListPreference
             android:key="security_setting_lock_screen_notif"
             android:title="@string/lock_screen_notifications_title"
