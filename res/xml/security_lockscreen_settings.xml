@@ -64,6 +64,12 @@
             settings:position="none" />
 
         <Preference
+            android:key="pulse"
+            android:title="@string/pulse_settings"
+            android:summary="@string/show_lockscreen_pulse_summary"
+            android:fragment="com.android.settings.pulse.Pulse" />
+
+        <Preference
             android:key="security_lock_screen_notifications_page"
             android:title="@string/lock_screen_notifs_title"
             android:summary="@string/summary_placeholder"
