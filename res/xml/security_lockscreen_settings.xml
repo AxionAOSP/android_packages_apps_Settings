@@ -138,6 +138,12 @@
             android:fragment="com.android.settings.display.AmbientSettings" />
 
         <Preference
+            android:key="edge_light"
+            android:title="@string/edge_light_title"
+            android:summary="@string/edge_light_summary"
+            android:fragment="com.android.settings.edgelight.EdgeLight" />
+
+        <Preference
             android:key="ambient_display_tap"
             android:title="@string/ambient_display_tap_screen_title"
             android:fragment="com.android.settings.gestures.TapScreenGestureSettings"
