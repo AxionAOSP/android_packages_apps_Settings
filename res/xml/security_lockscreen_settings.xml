@@ -123,6 +123,12 @@
             android:title="@string/lockscreen_quick_affordances_title"
             android:summary="@string/summary_placeholder"
             settings:controller="com.android.settings.display.CustomizableLockScreenQuickAffordancesPreferenceController" />
+            
+        <Preference
+            android:key="power_off_verify"
+            android:title="@string/power_off_verify_title"
+            android:summary="@string/power_off_verify_summary"
+            android:fragment="com.android.settings.security.PowerOffVerify" />
     </PreferenceCategory>
 
     <PreferenceCategory
