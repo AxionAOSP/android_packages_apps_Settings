@@ -96,6 +96,13 @@
             android:targetClass="io.chaldeaprjkt.gamespace.settings.SettingsActivity" />
     </Preference>
 
+    <Preference
+        android:key="sidebar"
+        android:title="@string/sidebar_title"
+        android:summary="@string/sidebar_summary"
+        android:order="-992"
+        android:fragment="com.android.settings.sidebar.FloatingWindows" />
+
     <PreferenceCategory
         android:key="dashboard_tile_placeholder"
         android:order="10"/>
