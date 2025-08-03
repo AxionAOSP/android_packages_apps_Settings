@@ -26,6 +26,8 @@ import com.android.settings.notification.LockScreenNotificationPreferenceControl
 import com.android.settingslib.core.lifecycle.LifecycleObserver;
 import com.android.settingslib.core.lifecycle.events.OnResume;
 
+import com.android.settings.R;
+
 public class LockScreenPreferenceController extends BasePreferenceController implements
         LifecycleObserver, OnResume {
 
@@ -48,8 +50,7 @@ public class LockScreenPreferenceController extends BasePreferenceController imp
 
     @Override
     public void updateState(Preference preference) {
-        preference.setSummary(
-                LockScreenNotificationPreferenceController.getSummaryResource(mContext));
+        preference.setSummary(R.string.lockscreen_settings_summary);
     }
 
     @Override
