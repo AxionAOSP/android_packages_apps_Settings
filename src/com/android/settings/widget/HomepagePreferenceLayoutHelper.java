@@ -28,6 +28,8 @@ import com.android.settingslib.widget.SettingsThemeHelper;
 /** Helper for homepage preference to manage layout. */
 public class HomepagePreferenceLayoutHelper {
 
+    private final Preference mPreference;
+
     private View mIcon;
     private View mText;
     private boolean mIconVisible = true;
@@ -41,12 +43,8 @@ public class HomepagePreferenceLayoutHelper {
     }
 
     public HomepagePreferenceLayoutHelper(Preference preference) {
-        preference.setLayoutResource(
-                Flags.homepageRevamp()
-                        ? SettingsThemeHelper.isExpressiveTheme(preference.getContext())
-                                ? R.layout.homepage_preference_expressive
-                                : R.layout.homepage_preference_v2
-                        : R.layout.homepage_preference);
+        mPreference = preference;
+        preference.setLayoutResource(R.layout.nt_homepage_preference_v2);
     }
 
     /** Sets whether the icon should be visible */
@@ -81,5 +79,24 @@ public class HomepagePreferenceLayoutHelper {
         setIconVisible(mIconVisible);
         setIconPaddingStart(mIconPaddingStart);
         setTextPaddingStart(mTextPaddingStart);
+
+        if (Flags.homepageRevamp()) {
+            hideSummaryIfNeeded(holder);
+        }
+    }
+
+    private void hideSummaryIfNeeded(PreferenceViewHolder holder) {
+        String key = mPreference.getKey();
+        if (key != null && !isConnectivityKey(key)) {
+            View summary = holder.findViewById(android.R.id.summary);
+            if (summary != null) {
+                summary.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private boolean isConnectivityKey(String key) {
+        return "top_level_network".equals(key) ||
+               "top_level_connected_devices".equals(key);
     }
 }
