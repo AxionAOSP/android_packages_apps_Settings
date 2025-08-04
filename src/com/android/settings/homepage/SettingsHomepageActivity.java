@@ -81,6 +81,7 @@ import com.android.settings.safetycenter.SafetyCenterManagerWrapper;
 import com.android.settingslib.Utils;
 import com.android.settingslib.core.lifecycle.HideNonSystemOverlayMixin;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.setupcompat.util.WizardManagerHelper;
 
 import java.net.URISyntaxException;
@@ -267,6 +268,8 @@ public class SettingsHomepageActivity extends FragmentActivity implements
         mLoadedListeners = new ArraySet<>();
 
         initSearchBarView();
+        
+        setupAppBar();
 
         getLifecycle().addObserver(new HideNonSystemOverlayMixin(this));
         mCategoryMixin = new CategoryMixin(this);
@@ -398,23 +401,37 @@ public class SettingsHomepageActivity extends FragmentActivity implements
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content),
                 (v, windowInsets) -> {
-                    Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()
-                            | WindowInsetsCompat.Type.displayCutout());
+                    Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
                     // Apply the insets paddings to the view.
-                    v.setPadding(insets.left, 0, insets.right, insets.bottom);
-
-                    // reset the top padding of search bar container to original top padding
-                    // plus insets top.
-                    View container = findViewById(R.id.app_bar_container);
-                    final int top_padding = getResources().getDimensionPixelSize(
-                            R.dimen.search_bar_container_top_padding);
-                    container.setPadding(container.getPaddingLeft(), top_padding + insets.top,
-                            container.getPaddingRight(), container.getPaddingBottom());
+                    v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
 
                     // Return CONSUMED if you don't want the window insets to keep being
                     // passed down to descendant views.
                     return WindowInsetsCompat.CONSUMED;
                 });
+    }
+
+    private void setupAppBar() {
+        AppBarLayout appBarLayout = findViewById(R.id.app_bar);
+        View title = findViewById(R.id.homepage_title);
+        View avatar = findViewById(R.id.account_avatar);
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                int totalScrollRange = appBarLayout.getTotalScrollRange();
+                float scrollFactor = Math.abs(verticalOffset) / (float) totalScrollRange;
+                float fadeThreshold = 0.8f;
+                if (scrollFactor >= fadeThreshold) {
+                    title.setAlpha(0f);
+                    avatar.setAlpha(0f);
+                } else {
+                    float alpha = 1f - (scrollFactor / fadeThreshold);
+                    title.setAlpha(alpha);
+                    avatar.setAlpha(alpha);
+                }
+            }
+        });
     }
 
     private void initSearchBarView() {
