@@ -20,6 +20,8 @@ import static android.app.UiModeManager.MODE_NIGHT_CUSTOM;
 import android.app.TimePickerDialog;
 import android.app.UiModeManager;
 import android.content.Context;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import androidx.preference.Preference;
@@ -63,7 +65,12 @@ public class DarkModeCustomPreferenceController extends BasePreferenceController
     public int getAvailabilityStatus() {
         return mUiModeManager.getNightMode() == MODE_NIGHT_CUSTOM
                 && mUiModeManager.getNightModeCustomType()
-                == UiModeManager.MODE_NIGHT_CUSTOM_TYPE_SCHEDULE
+                == UiModeManager.MODE_NIGHT_CUSTOM_TYPE_SCHEDULE ||
+                Settings.Secure.getIntForUser(
+                    mContext.getContentResolver(),
+                    "mode_night_custom_type_by_user",
+                    -1,
+                    UserHandle.USER_CURRENT) == 0
                 ? AVAILABLE : CONDITIONALLY_UNAVAILABLE;
     }
 
