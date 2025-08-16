@@ -19,6 +19,8 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.location.LocationManager;
 import android.os.PowerManager;
+import android.os.UserHandle;
+import android.provider.Settings;
 
 import androidx.preference.DropDownPreference;
 import androidx.preference.Preference;
@@ -77,6 +79,17 @@ public class DarkModeScheduleSelectorController extends BasePreferenceController
     }
 
     private int getCurrentMode() {
+        int customTypeByUser = Settings.Secure.getIntForUser(
+                mContext.getContentResolver(),
+                "mode_night_custom_type_by_user",
+                -1,
+                UserHandle.USER_CURRENT
+        );
+
+        if (customTypeByUser == 0) {
+            return mPreference.findIndexOfValue(mContext.getString(R.string.dark_ui_auto_mode_custom));
+        }
+
         int resId;
         switch (mUiModeManager.getNightMode()) {
             case UiModeManager.MODE_NIGHT_AUTO:
@@ -102,6 +115,7 @@ public class DarkModeScheduleSelectorController extends BasePreferenceController
         if (newMode == mCurrentMode) {
             return false;
         }
+        boolean isSchedule = false;
         if (newMode == mPreference.findIndexOfValue(
                 mContext.getString(R.string.dark_ui_auto_mode_never))) {
             boolean active = (mContext.getResources().getConfiguration().uiMode
@@ -123,11 +137,18 @@ public class DarkModeScheduleSelectorController extends BasePreferenceController
         } else if (newMode == mPreference.findIndexOfValue(
                 mContext.getString(R.string.dark_ui_auto_mode_custom))) {
             mUiModeManager.setNightMode(UiModeManager.MODE_NIGHT_CUSTOM);
+            isSchedule = true;
         } else if (newMode == mPreference.findIndexOfValue(
                 mContext.getString(R.string.dark_ui_auto_mode_custom_bedtime))) {
             mUiModeManager.setNightModeCustomType(UiModeManager.MODE_NIGHT_CUSTOM_TYPE_BEDTIME);
         }
         mCurrentMode = newMode;
+        Settings.Secure.putIntForUser(
+            mContext.getContentResolver(),
+            "mode_night_custom_type_by_user",
+            isSchedule ? 0 : -1,
+            UserHandle.USER_CURRENT
+        );
         return true;
     }
 }
