@@ -32,81 +32,43 @@ class RefreshRateSettings : BasePreferenceFragment(R.xml.refresh_rate_settings),
     private lateinit var radioPrefs: MutableList<RadioButtonPreference>
     private val cr by lazy { requireContext().contentResolver }
 
-    data class RefreshRateMode(
-        val key: String,
-        val titleRes: Int,
-        val summaryRes: Int,
-        val modeSummaryRes: Int,
-        val modeValue: Int,
-        val rateValue: Int
-    )
-
-    private val modeMap = mutableMapOf<String, RefreshRateMode>()
+    private val modeMap = mutableMapOf<String, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setupVRRModes()
+        setupModes()
         setupRadioButtons()
         refreshRadios()
     }
 
-    private fun setupVRRModes() {
+    private fun setupModes() {
         val displayManager = requireContext().getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
         val display = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
         val refreshRates = display.supportedModes.map { it.refreshRate.toInt() }.distinct().sorted()
         if (refreshRates.isEmpty()) return
-
-        val minRate = refreshRates.first()
-        val maxRate = refreshRates.last()
-
         val supportsDynamic = SystemProperties.getBoolean(
             "ro.surface_flinger.use_content_detection_for_refresh_rate", false
         )
-
         if (supportsDynamic) {
-            modeMap["refresh_rate_dynamic"] = RefreshRateMode(
-                "refresh_rate_dynamic",
-                R.string.refresh_rate_dynamic,
-                R.string.refresh_rate_dynamic_summary,
-                0,
-                0,
-                0
-            )
+            modeMap["refresh_rate_dynamic"] = 0
         }
-
-        modeMap["refresh_rate_high"] = RefreshRateMode(
-            "refresh_rate_high",
-            R.string.refresh_rate_high,
-            R.string.refresh_rate_summary,
-            R.string.refresh_rate_high_summary,
-            1,
-            maxRate
-        )
-
-        modeMap["refresh_rate_standard"] = RefreshRateMode(
-            "refresh_rate_standard",
-            R.string.refresh_rate_standard,
-            R.string.refresh_rate_summary,
-            R.string.refresh_rate_standard_summary,
-            2,
-            minRate
-        )
+        refreshRates.forEach { hz ->
+            modeMap["refresh_rate_$hz"] = hz
+        }
     }
 
     private fun setupRadioButtons() {
         val category = findPreference<PreferenceCategory>("refresh_rate_category") ?: return
         radioPrefs = mutableListOf()
-
-        modeMap.values.forEach { mode ->
+        modeMap.forEach { (key, value) ->
             val radio = RadioButtonPreference(requireContext()).apply {
-                key = mode.key
-                title = getString(mode.titleRes)
-                val summaryStart = getString(mode.summaryRes)
-                val rates = if (mode.rateValue != 0) "${mode.rateValue}Hz " else ""
-                val modeSummary = if (mode.modeSummaryRes != 0) getString(mode.modeSummaryRes) else ""
-                // concatenation is intended for our tranlator script, it cant handle all format specifiers on some languages yet
-                summary = "$summaryStart $rates$modeSummary"
+                this.key = key
+                title = if (value == 0) {
+                    getString(R.string.refresh_rate_dynamic)
+                } else {
+                    "${value}Hz"
+                }
+                summary = null
                 setOnRadioButtonClickedListener(this@RefreshRateSettings)
             }
             radioPrefs.add(radio)
@@ -115,15 +77,15 @@ class RefreshRateSettings : BasePreferenceFragment(R.xml.refresh_rate_settings),
     }
 
     override fun onRadioButtonClicked(pref: RadioButtonPreference) {
-        val mode = modeMap[pref.key]?.modeValue ?: return
-        Settings.Global.putInt(cr, "display_refresh_rate_mode", mode)
+        val modeValue = modeMap[pref.key] ?: return
+        Settings.Global.putInt(cr, "display_refresh_rate_mode", modeValue)
         refreshRadios()
     }
 
     private fun refreshRadios() {
         val currentMode = Settings.Global.getInt(cr, "display_refresh_rate_mode", 0)
         radioPrefs.forEach { radio ->
-            val modeValue = modeMap[radio.key]?.modeValue ?: 0
+            val modeValue = modeMap[radio.key] ?: 0
             radio.isSelected = currentMode == modeValue
         }
     }
