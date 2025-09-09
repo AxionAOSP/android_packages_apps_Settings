@@ -164,6 +164,13 @@
             android:summary="@string/display_white_balance_summary"
             settings:controller="com.android.settings.display.DisplayWhiteBalancePreferenceController"/>
 
+        <Preference
+            android:key="hbm"
+            android:title="@string/auto_hbm_enabled_title"
+            android:summary="@string/auto_hbm_enabled_summary"
+            android:fragment="com.android.settings.display.Hbm"
+            settings:controller="com.android.settings.display.HbmSettingsPreferenceController" />
+
         <SwitchPreferenceCompat
             android:key="hdr_display"
             android:title="@string/hdr_display_title"
