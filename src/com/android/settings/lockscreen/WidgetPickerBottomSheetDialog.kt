@@ -17,6 +17,7 @@ package com.android.settings.lockscreen
 
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,44 +34,50 @@ import androidx.recyclerview.widget.RecyclerView
 
 class WidgetPickerBottomSheetDialog : BottomSheetDialogFragment() {
 
-    private lateinit var selectedRecyclerView: RecyclerView
-    private lateinit var pickerRecyclerView: RecyclerView
-    private lateinit var confirmButton: MaterialButton
-    private lateinit var cancelButton: MaterialButton
-    private lateinit var resetButton: MaterialButton
-    private lateinit var guideTextView: View
-
-    private val workingWidgets = mutableListOf<String>()
+    private lateinit var selectedRV: RecyclerView
+    private lateinit var pickerRV: RecyclerView
+    private lateinit var confirm: MaterialButton
+    private lateinit var cancel: MaterialButton
+    private lateinit var reset: MaterialButton
+    private lateinit var guideTextView: TextView
+    
     private val maxWidgets = 4
 
+    private var active: List<String> = emptyList()
+        set(value) {
+            field = value.filter { it.isNotBlank() }.distinct().take(maxWidgets)
+            selectedAdapter.selectedWidgets = field
+            pickerAdapter.selection = field
+            updateGuideText()
+        }
+    
     private val selectedAdapter = SelectedWidgetAdapter(
-        onRemove = { removeWidget(it) },
+        onRemove = { active = active - it },
         onReorder = { newList ->
-            workingWidgets.clear()
-            workingWidgets.addAll(newList)
+            reset()
+            active = newList
         }
     )
+
     private val pickerAdapter = WidgetPickerAdapter(maxWidgets) { widget ->
-        if (workingWidgets.contains(widget)) {
-            removeWidget(widget)
+        if (widget in active) {
+            active = active - widget
         } else {
-            addWidget(widget)
+            active = active + widget
         }
     }
 
     override fun onStart() {
         super.onStart()
-
         dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.let { bottomSheet ->
-            val behavior = BottomSheetBehavior.from(bottomSheet)
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            behavior.skipCollapsed = true
+            BottomSheetBehavior.from(bottomSheet).apply {
+                state = BottomSheetBehavior.STATE_EXPANDED
+                skipCollapsed = true
+            }
         }
     }
 
-    override fun getTheme(): Int {
-        return R.style.BottomSheetDialogStyle
-    }
+    override fun getTheme(): Int = R.style.BottomSheetDialogStyle
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.widget_picker_bottom_sheet, container, false)
@@ -79,20 +86,19 @@ class WidgetPickerBottomSheetDialog : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        selectedRecyclerView = view.findViewById(R.id.selected_recycler)
-        pickerRecyclerView = view.findViewById(R.id.picker_recycler)
-        confirmButton = view.findViewById(R.id.confirm_button)
-        cancelButton = view.findViewById(R.id.cancel_button)
-        resetButton = view.findViewById(R.id.reset_button)
+        selectedRV = view.findViewById(R.id.selected_recycler)
+        pickerRV = view.findViewById(R.id.picker_recycler)
+        confirm = view.findViewById(R.id.confirm_button)
+        cancel = view.findViewById(R.id.cancel_button)
+        reset = view.findViewById(R.id.reset_button)
         guideTextView = view.findViewById(R.id.selected_guide_text)
 
-        selectedRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        selectedRecyclerView.adapter = selectedAdapter
+        selectedRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        selectedRV.adapter = selectedAdapter
 
-        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT or
-                    ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
-
+        val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT or ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+        ) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -104,77 +110,56 @@ class WidgetPickerBottomSheetDialog : BottomSheetDialogFragment() {
                 return true
             }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            }
-
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
             override fun isLongPressDragEnabled(): Boolean = true
         })
-        itemTouchHelper.attachToRecyclerView(selectedRecyclerView)
+        touchHelper.attachToRecyclerView(selectedRV)
 
-        pickerRecyclerView.layoutManager = LinearLayoutManager(context)
-        pickerRecyclerView.adapter = pickerAdapter
+        pickerRV.layoutManager = LinearLayoutManager(context)
+        pickerRV.adapter = pickerAdapter
 
-        workingWidgets.clear()
-        val initial = arguments?.getStringArrayList("widgets") ?: arrayListOf()
-        workingWidgets.addAll(initial)
+        val currentWidgets = arguments?.getStringArrayList("widgets") ?: arrayListOf()
+        active = currentWidgets.take(maxWidgets).toMutableList()
+        selectedAdapter.selectedWidgets = active.toList()
+        pickerAdapter.selection = active.toList()
 
-        selectedAdapter.setWidgets(workingWidgets)
-        pickerAdapter.setSelection(workingWidgets)
-
-        confirmButton.setOnClickListener {
+        confirm.setOnClickListener {
             Settings.System.putString(
                 requireContext().contentResolver,
                 "lockscreen_widgets_extras",
-                workingWidgets.joinToString(",")
+                active.joinToString(",")
             )
             dismiss()
         }
 
-        cancelButton.setOnClickListener { dismiss() }
+        cancel.setOnClickListener { dismiss() }
 
-        resetButton.setOnClickListener {
+        reset.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.reset_to_default)
                 .setMessage(R.string.reset_confirmation)
-                .setPositiveButton(R.string.yes) { _, _ -> performReset() }
+                .setPositiveButton(R.string.yes) { _, _ -> reset() }
                 .setNegativeButton(R.string.no, null)
                 .show()
         }
 
         updateGuideText()
+        Log.d("LockscreenWidgets", "oncreate: active: $active")
     }
 
-    private fun addWidget(widget: String) {
-        if (!workingWidgets.contains(widget) && workingWidgets.size < maxWidgets) {
-            workingWidgets.add(widget)
-            selectedAdapter.setWidgets(workingWidgets)
-            pickerAdapter.setSelection(workingWidgets)
-            updateGuideText()
-        }
-    }
-
-    private fun removeWidget(widget: String) {
-        workingWidgets.remove(widget)
-        selectedAdapter.setWidgets(workingWidgets)
-        pickerAdapter.setSelection(workingWidgets)
-        updateGuideText()
-    }
-
-    private fun performReset() {
-        workingWidgets.clear()
-        selectedAdapter.setWidgets(workingWidgets)
-        pickerAdapter.setSelection(workingWidgets)
-        updateGuideText()
+    private fun reset() {
+        active = emptyList()
+        Log.d("LockscreenWidgets", "reset: active: $active")
     }
 
     private fun updateGuideText() {
-        val targetText = if (workingWidgets.isNotEmpty()) {
+        val targetText = if (active.isNotEmpty()) {
             getString(R.string.selected_widgets_guide)
         } else {
             getString(R.string.selected_widgets_empty)
         }
 
-        val textView = guideTextView as TextView
+        val textView = guideTextView
         if (textView.text == targetText) return
 
         textView.animate()
@@ -189,9 +174,9 @@ class WidgetPickerBottomSheetDialog : BottomSheetDialogFragment() {
 
     companion object {
         fun newInstance(current: List<String>): WidgetPickerBottomSheetDialog {
-            val dialog = WidgetPickerBottomSheetDialog()
-            dialog.arguments = bundleOf("widgets" to ArrayList(current))
-            return dialog
+            return WidgetPickerBottomSheetDialog().apply {
+                arguments = bundleOf("widgets" to ArrayList(current))
+            }
         }
     }
 }

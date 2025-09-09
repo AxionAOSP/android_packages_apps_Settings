@@ -15,16 +15,14 @@
  */
 package com.android.settings.lockscreen
 
-import android.content.Context
-import android.content.res.ColorStateList
-import android.view.ContextThemeWrapper
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
-import com.google.android.material.color.MaterialColors
 import com.android.settings.R
 
 class SelectedWidgetAdapter(
@@ -32,7 +30,11 @@ class SelectedWidgetAdapter(
     private val onReorder: (List<String>) -> Unit
 ) : RecyclerView.Adapter<SelectedWidgetAdapter.WidgetViewHolder>() {
 
-    private val widgets = mutableListOf<String>()
+    var selectedWidgets: List<String> = emptyList()
+        set(value) {
+            field = value.filter { it.isNotBlank() }.take(4)
+            notifyDataSetChanged()
+        }
 
     private val widgetIcons = mapOf(
         "torch" to R.drawable.ic_flashlight,
@@ -43,44 +45,42 @@ class SelectedWidgetAdapter(
         "hotspot" to R.drawable.ic_hotspot
     )
 
-    fun setWidgets(newList: List<String>) {
-        widgets.clear()
-        widgets.addAll(newList)
-        notifyDataSetChanged()
-    }
-
-    fun getWidgets(): List<String> = widgets.toList()
-
     fun moveItem(from: Int, to: Int) {
-        if (from == to) return
-        val item = widgets.removeAt(from)
-        widgets.add(to, item)
+        if (from == to || from !in selectedWidgets.indices || to !in selectedWidgets.indices) return
+        val mutable = selectedWidgets.toMutableList()
+        val item = mutable.removeAt(from)
+        mutable.add(to, item)
+        selectedWidgets = mutable
         notifyItemMoved(from, to)
-        onReorder(widgets)
+        onReorder(selectedWidgets)
     }
 
     fun removeItem(position: Int) {
-        val item = widgets.removeAt(position)
+        if (position !in selectedWidgets.indices) return
+        val mutable = selectedWidgets.toMutableList()
+        val item = mutable.removeAt(position)
+        selectedWidgets = mutable
         notifyItemRemoved(position)
         onRemove(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WidgetViewHolder {
-        val container = FrameLayout(parent.context)
-        val lp = ViewGroup.MarginLayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        container.layoutParams = lp
+        val container = FrameLayout(parent.context).apply {
+            layoutParams = ViewGroup.MarginLayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
         return WidgetViewHolder(container)
     }
 
-    override fun getItemCount(): Int = widgets.size
+    override fun getItemCount(): Int = selectedWidgets.size
 
     override fun onBindViewHolder(holder: WidgetViewHolder, position: Int) {
-        val widget = widgets[position]
         val chip = LayoutInflater.from(holder.itemView.context)
             .inflate(R.layout.item_widget_chip, holder.container, false) as Chip
+
+        val widget = selectedWidgets[position]
 
         chip.text = widget
         chip.isChecked = true
@@ -89,11 +89,11 @@ class SelectedWidgetAdapter(
             chip.chipIcon = ContextCompat.getDrawable(holder.itemView.context, it)
         }
 
-        val onRemoveClick = {
-            removeItem(holder.bindingAdapterPosition)
-        }
+        val onRemoveClick = { removeItem(holder.bindingAdapterPosition) }
         chip.setOnClickListener { onRemoveClick() }
         chip.setOnCloseIconClickListener { onRemoveClick() }
+
+        Log.d("LockscreenWidgets", "binded widget: $widget position: $position selectedWidgets: $selectedWidgets")
 
         holder.container.removeAllViews()
         holder.container.addView(chip)

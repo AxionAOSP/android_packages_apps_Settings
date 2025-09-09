@@ -16,6 +16,7 @@
 package com.android.settings.lockscreen
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +32,7 @@ class WidgetPickerAdapter(
     private val onToggleWidget: (String) -> Unit
 ) : RecyclerView.Adapter<WidgetPickerAdapter.ViewHolder>() {
 
-    private val allWidgets = listOf("torch", "wifi", "data", "ringer", "bt", "hotspot")
+    private val widgets = listOf("torch", "wifi", "data", "ringer", "bt", "hotspot")
 
     private val widgetIcons = mapOf(
         "torch" to R.drawable.ic_flashlight,
@@ -44,18 +45,26 @@ class WidgetPickerAdapter(
 
     private val selected = mutableSetOf<String>()
 
+    var selection: List<String>
+        get() = selected.toList()
+        set(value) {
+            selected.clear()
+            selected.addAll(value)
+            notifyDataSetChanged()
+        }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_widget_picker, parent, false)
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int = allWidgets.size
+    override fun getItemCount(): Int = widgets.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val widget = allWidgets[position]
+        val widget = widgets[position]
         holder.name.text = getWidgetDisplayName(holder.itemView.context, widget)
-        holder.checkbox.isChecked = selected.contains(widget)
+        holder.checkbox.isChecked = widget in selected
 
         widgetIcons[widget]?.let { iconRes ->
             val icon = AppCompatResources.getDrawable(holder.itemView.context, iconRes)?.mutate()
@@ -69,6 +78,7 @@ class WidgetPickerAdapter(
 
         holder.checkbox.setOnClickListener {
             toggleSelection(widget, position)
+            Log.d("LockscreenWidgets", "selected widget: $widget position: $position widgets: $widgets")
         }
     }
 
@@ -85,7 +95,7 @@ class WidgetPickerAdapter(
     }
 
     private fun toggleSelection(widget: String, position: Int) {
-        if (selected.contains(widget)) {
+        if (widget in selected) {
             selected.remove(widget)
             onToggleWidget(widget)
         } else if (selected.size < maxSelection) {
@@ -93,12 +103,6 @@ class WidgetPickerAdapter(
             onToggleWidget(widget)
         }
         notifyItemChanged(position)
-    }
-
-    fun setSelection(current: List<String>) {
-        selected.clear()
-        selected.addAll(current)
-        notifyDataSetChanged()
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
