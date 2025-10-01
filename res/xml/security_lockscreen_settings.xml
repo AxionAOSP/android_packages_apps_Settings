@@ -27,8 +27,11 @@
         <Preference
             android:key="lockscreen_widgets"
             android:title="@string/lockscreen_widgets_title"
-            android:summary="@string/lockscreen_widgets_enabled_summary"
-            android:fragment="com.android.settings.lockscreen.LockScreenWidgets" />
+            android:summary="@string/lockscreen_widgets_enabled_summary">
+            <intent
+                android:targetPackage="com.android.settings"
+                android:targetClass="com.android.settings.lockscreen.LockScreenWidgetPickerActivity" />
+        </Preference>
 
         <Preference
             android:key="quick_look"
