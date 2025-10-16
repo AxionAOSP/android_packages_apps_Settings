@@ -239,4 +239,8 @@
         <item quantity="other">Up to <xliff:g id="device_num">%1$d</xliff:g> devices can connect to this hotspot</item>
         <item quantity="one">Up to <xliff:g id="device_num">%1$d</xliff:g> device can connect to this hotspot</item>
     </plurals>
+
+    <!-- Override Mock Location restriction -->
+    <string name="override_mock_location_title">Override MockLocation restriction</string>
+    <string name="override_mock_location_summary">When enabled, apps cannot detect mock locations</string>
 </resources>
