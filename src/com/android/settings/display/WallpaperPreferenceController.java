@@ -91,13 +91,7 @@ public class WallpaperPreferenceController extends BasePreferenceController {
 
     @Override
     public int getAvailabilityStatus() {
-        if ((TextUtils.isEmpty(mWallpaperClass) && TextUtils.isEmpty(mStylesAndWallpaperClass))
-                || TextUtils.isEmpty(mWallpaperPackage)) {
-            Log.e(TAG, "No Wallpaper picker specified!");
-            return UNSUPPORTED_ON_DEVICE;
-        }
-        return canResolveWallpaperComponent(getComponentClassString())
-                ? AVAILABLE_UNSEARCHABLE : CONDITIONALLY_UNAVAILABLE;
+        return UNSUPPORTED_ON_DEVICE;
     }
 
     @Override
