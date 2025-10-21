@@ -5736,12 +5736,6 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
         </service>
-
-        <activity
-            android:name=".lockscreen.LockScreenWidgetPickerActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Material3.DayNight.NoActionBar.Fullscreen" />
-    
         <!-- This is the longest AndroidManifest.xml ever. -->
     </application>
 </manifest>
