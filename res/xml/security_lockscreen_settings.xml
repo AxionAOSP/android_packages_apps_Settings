@@ -23,15 +23,6 @@
     <PreferenceCategory
         android:key="lockscreen_what_to_show"
         android:title="@string/lockscreen_settings_what_to_show_category">
-        
-        <Preference
-            android:key="lockscreen_widgets"
-            android:title="@string/lockscreen_widgets_title"
-            android:summary="@string/lockscreen_widgets_enabled_summary">
-            <intent
-                android:targetPackage="com.android.settings"
-                android:targetClass="com.android.settings.lockscreen.LockScreenWidgetPickerActivity" />
-        </Preference>
 
         <Preference
             android:key="quick_look"
