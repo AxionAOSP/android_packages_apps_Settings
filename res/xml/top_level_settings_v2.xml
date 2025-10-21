@@ -68,6 +68,14 @@
             settings:highlightableMenuKey="@string/menu_key_wallpaper"
             settings:controller="com.android.settings.display.TopLevelWallpaperPreferenceController"/>
 
+        <com.android.settings.widget.RestrictedHomepagePreference
+            android:icon="@drawable/ic_custom_settings_wallpaper_white"
+            android:key="top_level_customization"
+            android:order="-9"
+            android:title="@string/customization_title"
+            android:summary="@string/wallpaper_dashboard_summary"
+            settings:controller="com.android.settings.customization.TopLevelThemePreferenceController"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory
