@@ -57,6 +57,12 @@
             android:defaultValue="false"
             settings:position="none" />
 
+        <com.android.settings.preferences.SecureSettingSwitchPreference
+            android:key="ripple_unlock_enable"
+            android:title="@string/enable_fingerprint_ripple_effect_title"
+            android:summary="@string/enable_ripple_effect_summary"
+            android:defaultValue="false" />
+
         <Preference
             android:key="pulse"
             android:title="@string/pulse_settings"
