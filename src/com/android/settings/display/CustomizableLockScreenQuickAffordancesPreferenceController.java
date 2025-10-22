@@ -40,9 +40,7 @@ public class CustomizableLockScreenQuickAffordancesPreferenceController extends
 
     @Override
     public int getAvailabilityStatus() {
-        return CustomizableLockScreenUtils.isFeatureEnabled(mContext)
-                ? AVAILABLE
-                : UNSUPPORTED_ON_DEVICE;
+        return UNSUPPORTED_ON_DEVICE;
     }
 
     @Override
