@@ -218,8 +218,8 @@
     <string name="status_bar_carrier_lock_screen_summary">Display carrier name on lockscreen status bar</string>
 
     <!-- Force LTE_CA -->
-    <string name="force_lte_ca">Force LTE CA</string>
-    <string name="force_lte_ca_summary">Force LTE carrier aggregation to work</string>
+    <string name="force_lte_ca_title">LTE carrier aggregation</string>
+    <string name="force_lte_ca_summary">Enhances LTE bandwidth by aggregating supported bands</string>
 
     <!-- WiFi Hotspot -->
     <string name="wifi_hotspot_hidden_ssid_title">Hidden network</string>
