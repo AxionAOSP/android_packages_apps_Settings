@@ -37,6 +37,13 @@
             android:defaultValue="true"
             settings:position="none" />
 
+        <com.android.settings.preferences.SecureSettingSwitchPreference
+            android:key="nt_mistouch_prevention_enable"
+            android:title="@string/nt_mistouch_prevention"
+            android:summary="@string/nt_mistouch_prevention_summary"
+            android:defaultValue="true"
+            settings:position="none" />
+
         <com.android.settings.RestrictedListPreference
             android:key="security_setting_lock_screen_notif"
             android:title="@string/lock_screen_notifications_title"
