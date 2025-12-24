@@ -35,6 +35,12 @@
             android:summary="@string/status_bar_carrier_lock_screen_summary"
             android:defaultValue="true" />        
 
+        <com.android.settings.preferences.SecureSettingSwitchPreference
+            android:key="ripple_unlock_enable"
+            android:title="@string/enable_fingerprint_ripple_effect_title"
+            android:summary="@string/enable_fingerprint_ripple_effect_summary"
+            android:defaultValue="false" />
+
         <Preference
             android:key="security_lock_screen_notifications_page"
             android:title="@string/lock_screen_notifs_title"
