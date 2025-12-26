@@ -80,7 +80,7 @@ fun AxionSettingsHomepage(
     AxionTheme {
         Scaffold(
             modifier = modifier,
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             topBar = {
                 AxionSettingsHeader(
                     onSearchClick = onSearchClick
@@ -243,16 +243,22 @@ fun AxionSettingsHomepage(
                             title = stringResource(R.string.account_dashboard_title_with_passkeys),
                             onClick = { onPreferenceClick("top_level_accounts") }
                         )
-                         SettingsItemWithDivider(
-                            icon = Icons.Outlined.Accessibility,
-                            title = stringResource(R.string.accessibility_settings),
-                            onClick = { onPreferenceClick("top_level_accessibility") }
-                        )
                         if (isSupportAvailable) {
+                            SettingsItemWithDivider(
+                                icon = Icons.Outlined.Accessibility,
+                                title = stringResource(R.string.accessibility_settings),
+                                onClick = { onPreferenceClick("top_level_accessibility") }
+                            )
                             SettingsItem(
                                 icon = Icons.Outlined.HelpOutline,
                                 title = stringResource(R.string.page_tab_title_support),
                                 onClick = { onPreferenceClick("top_level_support") }
+                            )
+                        } else {
+                            SettingsItem(
+                                icon = Icons.Outlined.Accessibility,
+                                title = stringResource(R.string.accessibility_settings),
+                                onClick = { onPreferenceClick("top_level_accessibility") }
                             )
                         }
                     }
@@ -274,17 +280,18 @@ fun AxionSettingsHeader(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = statusBarHeight)
-            .padding(horizontal = 24.dp, vertical = 24.dp)
+            .padding(horizontal = 16.dp)
+            .padding(top = 24.dp, bottom = 16.dp)
     ) {
         Text(
             text = stringResource(R.string.settings_label),
-            style = MaterialTheme.typography.headlineMedium.copy(
+            style = MaterialTheme.typography.headlineLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
             color = MaterialTheme.colorScheme.onBackground
         )
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         
         
         Surface(
@@ -293,7 +300,7 @@ fun AxionSettingsHeader(
                 .height(50.dp)
                 .clickable(onClick = onSearchClick),
             shape = RoundedCornerShape(25.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            color = MaterialTheme.colorScheme.surfaceContainerHighest
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -326,7 +333,7 @@ fun UserCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surface
+        color = MaterialTheme.colorScheme.surfaceBright
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -385,11 +392,10 @@ fun SettingsGroupCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceBright
         )
     ) {
         Column(
-            modifier = Modifier.padding(vertical = 4.dp),
             content = content
         )
     }
@@ -404,32 +410,32 @@ fun SettingsItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(52.dp)
+            .height(64.dp)
             .clickable(onClick = onClick)
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(26.dp),
+            modifier = Modifier.size(24.dp),
             tint = MaterialTheme.colorScheme.primary
         )
         
-        Spacer(modifier = Modifier.width(20.dp))
+        Spacer(modifier = Modifier.width(16.dp))
         
         Text(
             modifier = Modifier.weight(1f),
             text = title,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            modifier = Modifier.size(18.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -450,8 +456,8 @@ fun SettingsItemWithDivider(
         if (showDivider) {
             HorizontalDivider(
                 modifier = Modifier.padding(start = 56.dp, end = 16.dp),
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.surfaceContainer
             )
         }
     }
