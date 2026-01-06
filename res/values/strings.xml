@@ -2241,6 +2241,9 @@
     <string name="external_display_topology_hint">Hold and drag to rearrange displays.</string>
     <!-- External Display settings. -->
     <string name="external_display_mirroring_title">Mirror built-in display</string>
+    <!-- Floating rotation button -->
+    <string name="floating_rotation_button_title">Floating rotate button</string>
+    <string name="floating_rotation_button_summary">Show a floating rotate button when device is rotated</string>
 
     <!-- Wifi Display settings. The title of the screen. [CHAR LIMIT=40] -->
     <string name="wifi_display_settings_title">Google Cast</string>

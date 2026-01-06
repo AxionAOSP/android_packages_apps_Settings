@@ -160,7 +160,13 @@
             android:key="auto_rotate"
             android:title="@string/accelerometer_title"
             settings:keywords="@string/keywords_auto_rotate"
-            settings:controller="com.android.settings.display.AutoRotatePreferenceController"/>
+            settings:controller="com.android.settings.display.AutoRotatePreferenceController"/>    
+        <!-- Rotation button -->
+        <com.android.settings.preferences.SystemSettingSwitchPreference
+            android:key="enable_rotation_button"
+            android:title="@string/floating_rotation_button_title"
+            android:summary="@string/floating_rotation_button_summary"
+            android:defaultValue="true" />
 
         <!--
             Auto-rotation preference that will be shown when device state based auto-rotation
