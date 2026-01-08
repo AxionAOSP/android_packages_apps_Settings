@@ -173,21 +173,22 @@ fun AxionSettingsHomepage(
                     SettingsGroupCard {
                         if (isSafetyCenterAvailable) {
                              SettingsItemWithDivider(
-                                icon = Icons.Outlined.Shield,
+                                icon = Icons.Outlined.GppGood,
                                 title = stringResource(R.string.safety_center_title),
                                 onClick = { onPreferenceClick("top_level_safety_center") }
                             )
+                        } else {
+                             SettingsItemWithDivider(
+                                icon = Icons.Outlined.Security,
+                                title = stringResource(R.string.security_settings_title),
+                                onClick = { onPreferenceClick("top_level_security") }
+                            )
+                             SettingsItemWithDivider(
+                                icon = Icons.Outlined.PrivacyTip,
+                                title = stringResource(R.string.privacy_dashboard_title),
+                                onClick = { onPreferenceClick("top_level_privacy") }
+                            )
                         }
-                         SettingsItemWithDivider(
-                            icon = Icons.Outlined.Security,
-                            title = stringResource(R.string.security_settings_title),
-                            onClick = { onPreferenceClick("top_level_security") }
-                        )
-                         SettingsItemWithDivider(
-                            icon = Icons.Outlined.PrivacyTip,
-                            title = stringResource(R.string.privacy_dashboard_title),
-                            onClick = { onPreferenceClick("top_level_privacy") }
-                        )
                          SettingsItemWithDivider(
                             icon = Icons.Outlined.LocationOn,
                             title = stringResource(R.string.location_settings_title),
