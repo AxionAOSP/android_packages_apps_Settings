@@ -1799,6 +1799,17 @@
                        android:value="true" />
         </activity>
 
+        <activity
+            android:name=".deviceinfo.axion.AxionAboutActivity"
+            android:label="@string/about_settings"
+            android:theme="@style/Theme.Settings.NoActionBar"
+            android:exported="true">
+            <meta-data android:name="com.android.settings.HIGHLIGHT_MENU_KEY"
+                android:value="@string/menu_key_about_device"/>
+            <meta-data android:name="com.android.settings.PRIMARY_PROFILE_CONTROLLED"
+                android:value="true" />
+        </activity>
+
         <activity android:name=".Settings$FirmwareVersionActivity"
             android:label="@string/firmware_version"
             android:exported="true">
