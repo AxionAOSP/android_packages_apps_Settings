@@ -2574,6 +2574,12 @@
     <string name="wifi_subscription_summary">View or change subscription</string>
     <!-- Summary for Wifi MAC randomization option when it is ephemeral network [CHAR LIMIT=50] -->
     <string name="wifi_privacy_settings_ephemeral_summary">Randomized MAC</string>
+    <!-- Label for per-connection randomized MAC option [CHAR LIMIT=40] -->
+    <string name="wifi_privacy_randomize_each_connection">Randomize each connection</string>
+    <!-- Label for per-network randomized MAC option [CHAR LIMIT=40] -->
+    <string name="wifi_privacy_per_network_randomized_mac">Use randomized MAC</string>
+    <!-- Label for device MAC option [CHAR LIMIT=40] -->
+    <string name="wifi_privacy_device_mac">Use device MAC</string>
     <!-- Title for the fragment to add a device into the wifi network [CHAR LIMIT=50]  -->
     <string name="wifi_dpp_add_device_to_network">Add a device</string>
     <!-- Hint for the user to center another device's QR code in the below camera window [CHAR LIMIT=120] -->
