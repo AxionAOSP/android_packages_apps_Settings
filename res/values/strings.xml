@@ -6232,6 +6232,13 @@
     <string name="accessibility_vibration_setting_disabled_for_silent_mode_summary">Setting disabled because device is set to silent</string>
     <!-- Title for the category of preferences to configure device vibrations related to calls. [CHAR LIMIT=NONE] -->
     <string name="accessibility_call_vibration_category_title">Calls</string>
+    <string name="incall_vibration_category_title">In-call vibration</string>
+    <string name="incall_vibrate_on_connect_title">Vibrate on connect</string>
+    <string name="incall_vibrate_on_connect_summary">Vibrate when the call is answered</string>
+    <string name="incall_vibrate_on_disconnect_title">Vibrate on disconnect</string>
+    <string name="incall_vibrate_on_disconnect_summary">Vibrate when the call ends</string>
+    <string name="incall_vibrate_on_call_waiting_title">Vibrate on call waiting</string>
+    <string name="incall_vibrate_on_call_waiting_summary">Vibrate when receiving a call while on another call</string>
     <!-- Title for the category of preferences to configure device vibrations related to notifications and alarms. [CHAR LIMIT=NONE] -->
     <string name="accessibility_notification_alarm_vibration_category_title">Notifications and alarms</string>
     <!-- Title for the category of preferences to configure device vibrations triggered by user interaction with the device. [CHAR LIMIT=NONE] -->
