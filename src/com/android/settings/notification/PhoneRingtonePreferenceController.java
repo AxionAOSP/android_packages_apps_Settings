@@ -19,8 +19,12 @@ package com.android.settings.notification;
 import android.content.Context;
 import android.media.RingtoneManager;
 import android.media.audio.Flags;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 
 import com.android.settings.Utils;
+
+import java.util.List;
 
 public class PhoneRingtonePreferenceController extends RingtonePreferenceControllerBase {
 
@@ -40,7 +44,17 @@ public class PhoneRingtonePreferenceController extends RingtonePreferenceControl
         if (isRingtoneVibrationEnabled()) {
             return false;
         }
-        return Utils.isVoiceCapable(mContext);
+        if (!Utils.isVoiceCapable(mContext)) {
+            return false;
+        }
+        SubscriptionManager sm = mContext.getSystemService(SubscriptionManager.class);
+        if (sm != null) {
+            List<SubscriptionInfo> subs = sm.getActiveSubscriptionInfoList();
+            if (subs != null && subs.size() > 1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
