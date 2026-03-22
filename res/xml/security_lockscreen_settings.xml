@@ -36,6 +36,12 @@
             android:defaultValue="false" />
 
         <Preference
+            android:key="power_off_verify"
+            android:title="@string/power_off_verify_title"
+            android:summary="@string/power_off_verify_summary"
+            android:fragment="com.android.settings.security.PowerOffVerify" />
+
+        <Preference
             android:key="security_lock_screen_notifications_page"
             android:title="@string/lock_screen_notifs_title"
             android:fragment="com.android.settings.notification.LockScreenNotificationsPreferencePageFragment"
