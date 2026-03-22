@@ -97,34 +97,35 @@ public class WifiPrivacyPreferenceController2 extends BasePreferenceController i
         return mWifiEntry.getPrivacy();
     }
 
-    private static final int PREF_RANDOMIZATION_PERSISTENT = 0;
-    private static final int PREF_RANDOMIZATION_NONE = 1;
-
     /**
-     * Translates a WifiEntry.Privacy value to the matching preference index value.
+     * Translates a WifiEntry.Privacy value to the matching preference value.
      *
      * @param privacy WifiEntry.Privacy value
-     * @return index value of preference
+     * @return preference value
      */
     public static int translateWifiEntryPrivacyToPrefValue(@WifiEntry.Privacy int privacy) {
-        return (privacy == WifiEntry.PRIVACY_RANDOMIZED_MAC)
-            ? PREF_RANDOMIZATION_PERSISTENT : PREF_RANDOMIZATION_NONE;
+        return privacy;
     }
 
     /**
      * Translates the pref value to WifiConfiguration.MacRandomizationSetting value
      *
-     * @param prefMacRandomized is preference index value
+     * @param prefMacRandomized is preference value
      * @return WifiConfiguration.MacRandomizationSetting value
      */
     public static int translatePrefValueToWifiConfigSetting(int prefMacRandomized) {
-        return (prefMacRandomized == PREF_RANDOMIZATION_PERSISTENT)
-            ? WifiConfiguration.RANDOMIZATION_AUTO : WifiConfiguration.RANDOMIZATION_NONE;
+        switch (prefMacRandomized) {
+            case WifiEntry.PRIVACY_DEVICE_MAC:
+                return WifiConfiguration.RANDOMIZATION_NONE;
+            case WifiEntry.PRIVACY_NON_PERSISTENT_MAC:
+                return WifiConfiguration.RANDOMIZATION_NON_PERSISTENT;
+            case WifiEntry.PRIVACY_RANDOMIZED_MAC:
+            default:
+                return WifiConfiguration.RANDOMIZATION_PERSISTENT;
+        }
     }
 
     private void updateSummary(ListPreference preference, int macRandomized) {
-        // Translates value here to set RANDOMIZATION_PERSISTENT as first item in UI for better UX.
-        final int prefMacRandomized = translateWifiEntryPrivacyToPrefValue(macRandomized);
-        preference.setSummary(preference.getEntries()[prefMacRandomized]);
+        preference.setSummary(preference.getEntry());
     }
 }
