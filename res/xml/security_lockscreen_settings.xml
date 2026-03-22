@@ -30,6 +30,13 @@
             settings:keywords="@string/keywords_lock_screen_notif"/>
 
         <com.android.settings.preferences.SecureSettingSwitchPreference
+            android:key="nt_mistouch_prevention_enable"
+            android:title="@string/nt_mistouch_prevention"
+            android:summary="@string/nt_mistouch_prevention_summary"
+            android:defaultValue="true"
+            settings:position="none" />
+
+        <com.android.settings.preferences.SecureSettingSwitchPreference
             android:key="enable_lockscreen_quick_settings"
             android:title="@string/lockscreen_quick_setting_title"
             android:summary="@string/lockscreen_quick_setting_summary"
