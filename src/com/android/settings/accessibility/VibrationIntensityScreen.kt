@@ -78,6 +78,32 @@ open class VibrationIntensityScreen : PreferenceScreenMixin, PreferenceAvailabil
                         ringPreferenceKey = RING_VIBRATION_INTENSITY,
                     )
                 }
+                +InCallVibrationPreferenceCategory() += {
+                    +InCallVibrationSwitchPreference(
+                        context,
+                        key = "incall_vibrate_on_connect",
+                        settingsKey = "incall_vibrate_on_connect",
+                        mainSwitchPreferenceKey = VIBRATE_ON,
+                        title = R.string.incall_vibrate_on_connect_title,
+                        summary = R.string.incall_vibrate_on_connect_summary,
+                    )
+                    +InCallVibrationSwitchPreference(
+                        context,
+                        key = "incall_vibrate_on_disconnect",
+                        settingsKey = "incall_vibrate_on_disconnect",
+                        mainSwitchPreferenceKey = VIBRATE_ON,
+                        title = R.string.incall_vibrate_on_disconnect_title,
+                        summary = R.string.incall_vibrate_on_disconnect_summary,
+                    )
+                    +InCallVibrationSwitchPreference(
+                        context,
+                        key = "incall_vibrate_on_call_waiting",
+                        settingsKey = "incall_vibrate_on_call_waiting",
+                        mainSwitchPreferenceKey = VIBRATE_ON,
+                        title = R.string.incall_vibrate_on_call_waiting_title,
+                        summary = R.string.incall_vibrate_on_call_waiting_summary,
+                    )
+                }
                 +NotificationAlarmVibrationPreferenceCategory() += {
                     +NotificationVibrationIntensitySliderPreference(context)
                     +AlarmVibrationIntensitySliderPreference(context)

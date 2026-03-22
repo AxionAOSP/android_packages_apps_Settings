@@ -76,6 +76,32 @@ open class VibrationScreen : PreferenceScreenMixin, PreferenceAvailabilityProvid
                         ringPreferenceKey = "toggle_ring_vibration_intensity",
                     )
                 }
+                +InCallVibrationPreferenceCategory("vibration_category_incall") += {
+                    +InCallVibrationSwitchPreference(
+                        context,
+                        key = "incall_vibrate_on_connect",
+                        settingsKey = "incall_vibrate_on_connect",
+                        mainSwitchPreferenceKey = MAIN_SWITCH_KEY,
+                        title = R.string.incall_vibrate_on_connect_title,
+                        summary = R.string.incall_vibrate_on_connect_summary,
+                    )
+                    +InCallVibrationSwitchPreference(
+                        context,
+                        key = "incall_vibrate_on_disconnect",
+                        settingsKey = "incall_vibrate_on_disconnect",
+                        mainSwitchPreferenceKey = MAIN_SWITCH_KEY,
+                        title = R.string.incall_vibrate_on_disconnect_title,
+                        summary = R.string.incall_vibrate_on_disconnect_summary,
+                    )
+                    +InCallVibrationSwitchPreference(
+                        context,
+                        key = "incall_vibrate_on_call_waiting",
+                        settingsKey = "incall_vibrate_on_call_waiting",
+                        mainSwitchPreferenceKey = MAIN_SWITCH_KEY,
+                        title = R.string.incall_vibrate_on_call_waiting_title,
+                        summary = R.string.incall_vibrate_on_call_waiting_summary,
+                    )
+                }
                 +NotificationAlarmVibrationPreferenceCategory(
                     "toggle_vibration_category_notification_alarm"
                 ) +=
@@ -128,6 +154,12 @@ open class VibrationScreen : PreferenceScreenMixin, PreferenceAvailabilityProvid
 class CallVibrationPreferenceCategory(
     key: String = "vibration_category_call",
     title: Int = R.string.accessibility_call_vibration_category_title,
+) : PreferenceCategory(key, title)
+
+/** In-call vibration preferences (connect, disconnect, call waiting). */
+class InCallVibrationPreferenceCategory(
+    key: String = "vibration_category_incall",
+    title: Int = R.string.incall_vibration_category_title,
 ) : PreferenceCategory(key, title)
 
 /** Notification and alarm vibration preferences. */

@@ -252,7 +252,15 @@
             android:summary="@string/screenshot_shutter_sound_summary"
             android:defaultValue="true" />
 
+        <!-- In-call vibration -->
+        <Preference
+            android:key="incall_vibration"
+            android:title="@string/incall_vibration_category_title"
+            android:order="-109"
+            android:fragment="com.android.settings.accessibility.InCallVibrationFragment" />
+
     </PreferenceCategory>
+
 
     <!-- Work profile sound category -->
     <PreferenceCategory
