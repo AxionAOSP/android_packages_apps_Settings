@@ -53,7 +53,7 @@ class LineageVersionDetailPreference :
 
     override fun intent(context: Context): Intent? =
         Intent(Intent.ACTION_MAIN)
-            .setClassName(PLATLOGO_PACKAGE_NAME, PLATLOGO_ACTIVITY_CLASS)
+            .setClassName(context.packageName, PLATLOGO_ACTIVITY_CLASS)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
     override fun bind(preference: Preference, metadata: PreferenceMetadata) {
@@ -104,8 +104,7 @@ class LineageVersionDetailPreference :
 
         const val LINEAGE_VERSION_PROPERTY: String = "ro.axion.version"
 
-        const val PLATLOGO_PACKAGE_NAME: String = "org.lineageos.lineageparts"
-        const val PLATLOGO_ACTIVITY_CLASS: String = PLATLOGO_PACKAGE_NAME + ".logo.PlatLogoActivity"
+        const val PLATLOGO_ACTIVITY_CLASS: String = "com.android.axion.easteregg.AxionEasterEggActivity"
     }
 }
 // LINT.ThenChange(LineageVersionDetailPreferenceController.java)

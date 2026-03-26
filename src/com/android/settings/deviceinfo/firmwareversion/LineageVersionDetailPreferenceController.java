@@ -44,9 +44,8 @@ public class LineageVersionDetailPreferenceController extends BasePreferenceCont
 
     private static final String KEY_LINEAGE_VERSION_PROP = "ro.axion.version";
 
-    private static final String PLATLOGO_PACKAGE_NAME = "org.lineageos.lineageparts";
     private static final String PLATLOGO_ACTIVITY_CLASS =
-            PLATLOGO_PACKAGE_NAME + ".logo.PlatLogoActivity";
+            "com.android.axion.easteregg.AxionEasterEggActivity";
 
     private final UserManager mUserManager;
     private final long[] mHits = new long[ACTIVITY_TRIGGER_COUNT];
@@ -102,7 +101,7 @@ public class LineageVersionDetailPreferenceController extends BasePreferenceCont
             }
 
             final Intent intent = new Intent(Intent.ACTION_MAIN)
-                     .setClassName(PLATLOGO_PACKAGE_NAME, PLATLOGO_ACTIVITY_CLASS);
+                     .setClassName(mContext.getPackageName(), PLATLOGO_ACTIVITY_CLASS);
             try {
                 mContext.startActivity(intent);
             } catch (Exception e) {
