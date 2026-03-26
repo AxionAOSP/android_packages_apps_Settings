@@ -192,4 +192,7 @@
     <!-- Carrier text lockscreen -->
     <string name="show_lockscreen_carrier_text_title">Show carrier name</string>
     <string name="show_lockscreen_carrier_text_summary">Wether to show carrier name on lockscreen</string>
+    
+    <!-- Notification screen on suppress -->
+    <string name="notification_sound_suppress_screen_on_title">Suppress notification sound on screen on</string>
 </resources>
