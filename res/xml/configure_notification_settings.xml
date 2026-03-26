@@ -148,6 +148,12 @@
             android:defaultValue="true"
             settings:position="none" />
 
+        <com.android.settings.preferences.SecureSettingSwitchPreference
+            android:key="notification_sound_suppress_screen_on"
+            android:title="@string/notification_sound_suppress_screen_on_title"
+            android:defaultValue="false"
+            settings:position="none" />
+
         <!--Adaptive Notifications-->
         <Preference
             android:fragment="com.android.settings.notification.PoliteNotificationsPreferenceFragment"
