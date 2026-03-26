@@ -48,6 +48,13 @@
             android:title="@string/enable_fingerprint_ripple_effect_title"
             android:summary="@string/enable_fingerprint_ripple_effect_summary"
             android:defaultValue="false" />
+            
+        <com.android.settings.preferences.SecureSettingSwitchPreference
+            android:key="show_lockscreen_carrier_text"
+            android:title="@string/show_lockscreen_carrier_text_title"
+            android:summary="@string/show_lockscreen_carrier_text_summary"
+            android:defaultValue="true"
+            settings:position="none" />
 
         <Preference
             android:key="power_off_verify"
