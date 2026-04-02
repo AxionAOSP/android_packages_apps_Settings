@@ -122,7 +122,7 @@ fun SettingsHomepageScreen(
         SettingsEntry(Icons.Outlined.Devices, stringResource(R.string.connected_devices_dashboard_title), key = "top_level_connected_devices"),
     )
     val customizeItems = listOf(
-        SettingsEntry(Icons.Outlined.Dashboard, "Personalizations", key = "axion_hub"),
+        SettingsEntry(Icons.Outlined.Dashboard, "Personalize", key = "axion_hub"),
         SettingsEntry(Icons.Outlined.Wallpaper, "Wallpaper & styles", key = "axion_themepicker"),
     )
     val displayItems = buildList {
