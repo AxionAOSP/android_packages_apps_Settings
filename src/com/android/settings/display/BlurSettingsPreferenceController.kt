@@ -37,12 +37,13 @@ class BlurSettingsPreferenceController(
         ) == 0
 
         if (blursEnabled) {
+            val maxBlurPx = 34f * mContext.resources.displayMetrics.density
             val radius = Settings.Secure.getFloat(
                 mContext.contentResolver,
                 "system_blur_radius",
-                34f
+                maxBlurPx
             )
-            val percent = (radius / 34f * 100).roundToInt()
+            val percent = (radius / maxBlurPx * 100).roundToInt()
             return "On ($percent%)"
         }
         return "Off"
