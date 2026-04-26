@@ -13828,6 +13828,13 @@
     <string name="lockscreen_double_line_clock_summary">Clock size changes according to lock screen content</string>
     <!-- Lockscreen dynamic clock toggle [CHAR LIMIT=60] -->
     <string name="lockscreen_double_line_clock_setting_toggle">Dynamic clock</string>
+
+    <!-- Charging info -->
+    <string name="lockscreen_charging_info_title">Charging info</string>
+    <string name="lockscreen_charging_info_summary">Show charging status on the lock screen</string>
+    <string name="lockscreen_charging_info_details_title">Show detailed info</string>
+    <string name="lockscreen_charging_info_details_summary">Show current, voltage, power and battery temperature while charging</string>
+
     <!-- Lock screen shortcuts preference [CHAR LIMIT=60] -->
     <string name="lockscreen_quick_affordances_title">Shortcuts</string>
     <!-- Summary for the lock screen button preference [CHAR LIMIT=60] -->

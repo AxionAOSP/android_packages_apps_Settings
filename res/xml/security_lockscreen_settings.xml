@@ -121,6 +121,19 @@
             android:title="@string/lockscreen_double_line_clock_setting_toggle"
             android:summary="@string/lockscreen_double_line_clock_summary"
             settings:controller="com.android.settings.display.LockscreenClockPreferenceController" />
+
+        <com.android.settings.preferences.SecureSettingSwitchPreference
+            android:key="lockscreen_charging_info"
+            android:title="@string/lockscreen_charging_info_title"
+            android:summary="@string/lockscreen_charging_info_summary"
+            android:defaultValue="true" />
+
+        <com.android.settings.preferences.SecureSettingSwitchPreference
+            android:key="lockscreen_charging_info_details"
+            android:title="@string/lockscreen_charging_info_details_title"
+            android:summary="@string/lockscreen_charging_info_details_summary"
+            android:dependency="lockscreen_charging_info"
+            android:defaultValue="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
