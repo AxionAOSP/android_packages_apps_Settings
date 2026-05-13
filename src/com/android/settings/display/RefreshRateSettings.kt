@@ -460,7 +460,7 @@ class RefreshRateSettings : Fragment() {
             if (parts.size >= 2) {
                 val pkg = parts[0]
                 val rate = parts[1].toIntOrNull() ?: 0
-                pkg to AppConfig(rate)
+                if (rate > 0) pkg to AppConfig(rate) else null
             } else null
         }.toMap()
     }
