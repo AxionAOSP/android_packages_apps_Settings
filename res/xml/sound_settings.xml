@@ -226,6 +226,11 @@
             android:title="@string/vibrate_icon_title"
             android:order="-27"/>
 
+        <SwitchPreferenceCompat
+            android:key="fingerprint_auth_vibrate"
+            android:title="@string/fingerprint_auth_vibrate_title"
+            android:order="-26"/>
+
         <!-- Dock speaker plays -->
         <DropDownPreference
             android:key="dock_audio_media"
