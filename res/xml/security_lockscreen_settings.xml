@@ -33,7 +33,7 @@
             android:key="nt_mistouch_prevention_enable"
             android:title="@string/nt_mistouch_prevention"
             android:summary="@string/nt_mistouch_prevention_summary"
-            android:defaultValue="true"
+            android:defaultValue="false"
             settings:position="none" />
 
         <com.android.settings.preferences.SecureSettingSwitchPreference
