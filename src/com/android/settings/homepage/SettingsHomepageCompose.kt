@@ -16,8 +16,6 @@
 package com.android.settings.homepage
 
 import android.graphics.Bitmap
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -64,11 +62,13 @@ import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material.icons.outlined.Wallpaper
 import androidx.compose.material.icons.outlined.SelfImprovement
 import androidx.compose.material.icons.outlined.Wifi
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -84,7 +84,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.axion.compose.preferences.ClickablePreference
@@ -94,6 +94,12 @@ import com.android.settings.R
 import java.util.function.Consumer
 
 private val SEARCH_BAR_RADIUS = 28.dp
+private val SEARCH_BAR_HEIGHT = 56.dp
+private val SEARCH_BAR_HORIZONTAL_PADDING = 12.dp
+private val SEARCH_BAR_TOP_PADDING = 24.dp
+private val SEARCH_BAR_PINNED_TOP_PADDING = 8.dp
+private val SEARCH_BAR_PINNED_BOTTOM_PADDING = 12.dp
+private val TITLE_TOP_PADDING = 56.dp
 private const val TITLE_ITEM_INDEX = 1
 
 private data class SettingsEntry(
@@ -102,6 +108,7 @@ private data class SettingsEntry(
     val key: String,
 )
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsHomepageScreen(
     onSearchClick: () -> Unit,
@@ -169,31 +176,37 @@ fun SettingsHomepageScreen(
     val listState = rememberLazyListState()
     val statusBarPadding = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
-    val isTitleScrolledAway by remember {
+    val density = LocalDensity.current
+    val toolbarTitleDensity = Density(density.density, fontScale = 1f)
+    val pinnedSearchTopPadding = statusBarPadding + SEARCH_BAR_PINNED_TOP_PADDING
+    val isSearchPinned by remember(listState) {
         derivedStateOf { listState.firstVisibleItemIndex > TITLE_ITEM_INDEX }
     }
-
-    val searchTopPadding by animateDpAsState(
-        targetValue = if (isTitleScrolledAway) statusBarPadding + 8.dp else 24.dp,
-        animationSpec = tween(200),
-        label = "searchTopPadding",
-    )
-
-    val searchBottomPadding by animateDpAsState(
-        targetValue = if (isTitleScrolledAway) 12.dp else 0.dp,
-        animationSpec = tween(200),
-        label = "searchBottomPadding",
-    )
-
-    val density = LocalDensity.current
-    val titleAlpha by remember {
+    val titleProgress by remember(listState, density, statusBarPadding) {
         derivedStateOf {
             val info = listState.layoutInfo.visibleItemsInfo.find { it.index == TITLE_ITEM_INDEX }
-                ?: return@derivedStateOf 0f
+            if (info == null) {
+                return@derivedStateOf if (listState.firstVisibleItemIndex > TITLE_ITEM_INDEX) {
+                    1f
+                } else {
+                    0f
+                }
+            }
             val statusBarPx = with(density) { statusBarPadding.toPx() }
+            val titleTopOffsetPx = info.offset.toFloat() + with(density) { TITLE_TOP_PADDING.toPx() }
             val fadeStartOffset = statusBarPx + with(density) { 32.dp.toPx() }
-            (info.offset.toFloat() / fadeStartOffset).coerceIn(0f, 1f)
+            1f - (titleTopOffsetPx / fadeStartOffset).coerceIn(0f, 1f)
         }
+    }
+    val pinnedSearchBottomPadding = if (isSearchPinned) SEARCH_BAR_PINNED_BOTTOM_PADDING else 0.dp
+    val searchTopPadding = SEARCH_BAR_TOP_PADDING +
+        (pinnedSearchTopPadding - SEARCH_BAR_TOP_PADDING) * titleProgress
+    val searchHeaderHeight = SEARCH_BAR_HEIGHT +
+        searchTopPadding +
+        pinnedSearchBottomPadding
+    val titleAlpha = 1f - titleProgress
+    val searchTranslationY = with(density) {
+        (searchTopPadding - SEARCH_BAR_TOP_PADDING).toPx()
     }
 
     AxionTheme {
@@ -244,14 +257,16 @@ fun SettingsHomepageScreen(
                 }
 
                 item {
-                    Text(
-                        text = stringResource(R.string.settings_label),
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 36.sp),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier
-                            .padding(start = 24.dp, top = 56.dp)
-                            .graphicsLayer { alpha = titleAlpha },
-                    )
+                    CompositionLocalProvider(LocalDensity provides toolbarTitleDensity) {
+                        Text(
+                            text = stringResource(R.string.settings_label),
+                            style = MaterialTheme.typography.displaySmallEmphasized,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier
+                                .padding(start = 24.dp, top = TITLE_TOP_PADDING)
+                                .graphicsLayer { alpha = titleAlpha },
+                        )
+                    }
                 }
 
                 stickyHeader {
@@ -259,31 +274,42 @@ fun SettingsHomepageScreen(
                         modifier = Modifier.fillMaxWidth(),
                         color = MaterialTheme.colorScheme.surfaceContainer,
                     ) {
-                        Surface(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = searchTopPadding, bottom = searchBottomPadding, start = 12.dp, end = 12.dp)
-                                .height(56.dp)
-                                .clickable(onClick = onSearchClick),
-                            shape = RoundedCornerShape(SEARCH_BAR_RADIUS),
-                            color = MaterialTheme.colorScheme.surfaceBright,
+                                .height(searchHeaderHeight),
                         ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 20.dp),
-                                verticalAlignment = Alignment.CenterVertically,
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .graphicsLayer { translationY = searchTranslationY }
+                                    .padding(
+                                        top = SEARCH_BAR_TOP_PADDING,
+                                        start = SEARCH_BAR_HORIZONTAL_PADDING,
+                                        end = SEARCH_BAR_HORIZONTAL_PADDING,
+                                    )
+                                    .height(SEARCH_BAR_HEIGHT)
+                                    .clickable(onClick = onSearchClick),
+                                shape = RoundedCornerShape(SEARCH_BAR_RADIUS),
+                                color = MaterialTheme.colorScheme.surfaceBright,
                             ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Search,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(24.dp),
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Text(
-                                    text = stringResource(R.string.search_settings),
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
-                                )
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 20.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Search,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(24.dp),
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Text(
+                                        text = stringResource(R.string.search_settings),
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
+                                    )
+                                }
                             }
                         }
                     }
