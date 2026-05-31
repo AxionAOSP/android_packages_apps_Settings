@@ -48,6 +48,9 @@ public class HdrDisplayPreferenceController extends TogglePreferenceController
 
     @Override
     public int getAvailabilityStatus() {
+        if (HdrBrightnessUtils.getAvailabilityStatus(mContext) == AVAILABLE) {
+            return UNSUPPORTED_ON_DEVICE;
+        }
         return SystemProperties.getBoolean("ro.surface_flinger.has_HDR_display", false)
                 ? AVAILABLE : UNSUPPORTED_ON_DEVICE;
     }
