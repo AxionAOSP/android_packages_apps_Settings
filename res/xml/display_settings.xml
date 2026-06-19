@@ -65,6 +65,8 @@
             settings:keywords="@string/keywords_ambient_display_screen"
             settings:controller="com.android.settings.security.screenlock.LockScreenPreferenceController"/>
 
+        <!-- Hide standard always-on display preference since it is managed by AxionParts -->
+        <!--
         <com.android.settingslib.PrimarySwitchPreference
             android:key="ambient_display_always_on_screen"
             android:title="@string/doze_always_on_title"
@@ -73,6 +75,7 @@
             settings:keywords="@string/keywords_always_show_time_info"
             settings:controller="com.android.settings.display.AmbientDisplayAlwaysOnPreferenceScreenController"
             settings:userRestriction="no_ambient_display" />
+        -->
 
         <com.android.settingslib.PrimarySwitchPreference
             android:key="ambient_display_external_settings"
