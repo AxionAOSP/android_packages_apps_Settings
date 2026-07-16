@@ -37,15 +37,22 @@ class BlurSettingsPreferenceController(
         ) == 0
 
         if (blursEnabled) {
-            val maxBlurPx = 34f * mContext.resources.displayMetrics.density
-            val radius = Settings.Secure.getFloat(
+            val radiusPct = Settings.Secure.getFloat(
                 mContext.contentResolver,
-                "system_blur_radius",
-                maxBlurPx
+                KEY_SYSTEM_BLUR_RADIUS_PCT,
+                MAX_BLUR_RADIUS_PCT
             )
-            val percent = (radius / maxBlurPx * 100).roundToInt()
-            return "On ($percent%)"
+            val percent = radiusPct.takeIf { it.isFinite() }
+                ?.coerceIn(MIN_BLUR_RADIUS_PCT, MAX_BLUR_RADIUS_PCT)
+                ?: MAX_BLUR_RADIUS_PCT
+            return "On (${percent.roundToInt()}%)"
         }
         return "Off"
+    }
+
+    companion object {
+        private const val KEY_SYSTEM_BLUR_RADIUS_PCT = "system_blur_radius_pct"
+        private const val MIN_BLUR_RADIUS_PCT = 0f
+        private const val MAX_BLUR_RADIUS_PCT = 100f
     }
 }
