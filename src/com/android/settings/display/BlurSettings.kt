@@ -111,10 +111,16 @@ class BlurSettings : Fragment() {
             mutableStateOf(Settings.Global.getInt(cr, Settings.Global.DISABLE_WINDOW_BLURS, if (blurEnabledByDefault) 0 else 1) == 0)
         }
 
-        val maxBlurPx = (34f * context.resources.displayMetrics.density)
-
-        var blurRadius by remember {
-            mutableStateOf(Settings.Secure.getFloat(cr, "system_blur_radius", maxBlurPx))
+        var blurRadiusPct by remember {
+            mutableStateOf(
+                Settings.Secure.getFloat(
+                    cr,
+                    KEY_SYSTEM_BLUR_RADIUS_PCT,
+                    MAX_BLUR_RADIUS_PCT,
+                ).takeIf { it.isFinite() }
+                    ?.coerceIn(MIN_BLUR_RADIUS_PCT, MAX_BLUR_RADIUS_PCT)
+                    ?: MAX_BLUR_RADIUS_PCT
+            )
         }
 
         Scaffold(
@@ -129,7 +135,7 @@ class BlurSettings : Fragment() {
                 contentPadding = PaddingValues(top = 16.dp, bottom = 32.dp)
             ) {
                 item {
-                    BlurIllustration(blursEnabled, blurRadius)
+                    BlurIllustration(blursEnabled, blurRadiusPct)
                 }
 
                 item {
@@ -148,15 +154,20 @@ class BlurSettings : Fragment() {
                     SliderPreference(
                         title = "Blur Strength",
                         summary = "",
-                        value = blurRadius,
+                        value = blurRadiusPct,
                         onValueChange = { 
-                            blurRadius = it
+                            blurRadiusPct = it
                         },
                         onValueChangeFinished = {
-                            Settings.Secure.putFloat(cr, "system_blur_radius", blurRadius)
+                            Settings.Secure.putFloat(
+                                cr,
+                                KEY_SYSTEM_BLUR_RADIUS_PCT,
+                                blurRadiusPct,
+                            )
                         },
-                        valueRange = 0f..maxBlurPx,
-                        displayValue = "${(blurRadius / maxBlurPx * 100).roundToInt()}%",
+                        valueRange = MIN_BLUR_RADIUS_PCT..MAX_BLUR_RADIUS_PCT,
+                        steps = BLUR_RADIUS_PCT_STEPS,
+                        displayValue = "${blurRadiusPct.roundToInt()}%",
                         enabled = blursEnabled,
                         position = PreferencePosition.Single
                     )
@@ -166,7 +177,7 @@ class BlurSettings : Fragment() {
     }
 
     @Composable
-    fun BlurIllustration(enabled: Boolean, radius: Float) {
+    fun BlurIllustration(enabled: Boolean, radiusPct: Float) {
         val context = LocalContext.current
 
         val layerFg = Color(context.getColor(com.android.internal.R.color.shade_panel_fg))
@@ -207,7 +218,10 @@ class BlurSettings : Fragment() {
                         WallpaperImage(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .blur((radius / context.resources.displayMetrics.density).dp)
+                                .blur(
+                                    (MAX_PREVIEW_BLUR_RADIUS_DP * radiusPct /
+                                        MAX_BLUR_RADIUS_PCT).dp
+                                )
                         )
 
                         Box(
@@ -437,6 +451,14 @@ class BlurSettings : Fragment() {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val KEY_SYSTEM_BLUR_RADIUS_PCT = "system_blur_radius_pct"
+        private const val MIN_BLUR_RADIUS_PCT = 0f
+        private const val MAX_BLUR_RADIUS_PCT = 100f
+        private const val BLUR_RADIUS_PCT_STEPS = 99
+        private const val MAX_PREVIEW_BLUR_RADIUS_DP = 34f
     }
 
 }
