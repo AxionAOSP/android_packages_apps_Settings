@@ -26,7 +26,7 @@ class HbmSettingsPreferenceController(
 ) : BasePreferenceController(context, preferenceKey) {
 
     override fun getAvailabilityStatus(): Int {
-        val hbmSupported = SystemProperties.getBoolean("persist.sys.hbmservice_support", false)
+        val hbmSupported = SystemProperties.getBoolean("persist.sys.ax_hbm_supp", false)
         return if (hbmSupported) {
             AVAILABLE 
         } else {
