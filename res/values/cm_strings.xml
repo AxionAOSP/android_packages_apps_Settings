@@ -221,4 +221,7 @@
     <string name="user_app_install_disabled_desc">Disable app installs and updates</string>
     <!-- Title of preference to enable running in background [CHAR LIMIT=40] -->
     <string name="user_run_in_background">Allow running in background</string>
+
+    <!-- Running services - Background processes tab -->
+    <string name="background_processes_settings_title">Background processes</string>
 </resources>
