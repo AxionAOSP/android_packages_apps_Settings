@@ -44,9 +44,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -76,9 +73,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import com.android.axion.compose.preferences.ClickablePreference
+import com.android.axion.compose.preferences.ListPreference
+import com.android.axion.compose.preferences.PreferenceGroup
+import com.android.axion.compose.preferences.SwitchPreference
 import com.android.axion.compose.theme.AxionTheme
 import com.android.settings.R
 import kotlin.math.absoluteValue
+
+private const val DYNAMIC_PEAK_REFRESH_RATE = "dynamic_peak_refresh_rate"
 
 class RefreshRateSettings : Fragment() {
 
@@ -157,6 +160,22 @@ class RefreshRateSettings : Fragment() {
         }
 
         val modes = remember { getModes(context) }
+        val supportedPeakRates = remember(modes) {
+            modes.map { it.first }.filter { it > 0 }.distinct().sorted()
+        }
+        var dynamicPeakRefreshRate by remember(supportedPeakRates) {
+            mutableIntStateOf(
+                Settings.System.getFloat(
+                    cr,
+                    DYNAMIC_PEAK_REFRESH_RATE,
+                    supportedPeakRates.maxOrNull()?.toFloat() ?: 60f,
+                ).toInt().let { storedRate ->
+                    supportedPeakRates.firstOrNull { it == storedRate }
+                        ?: supportedPeakRates.maxOrNull()
+                        ?: storedRate
+                },
+            )
+        }
 
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -174,18 +193,45 @@ class RefreshRateSettings : Fragment() {
                 }
 
                 item {
-                    SettingsGroupCard {
-                        modes.forEachIndexed { index, pair ->
-                            val (hz, label) = pair
-                            SettingsRadioItem(
-                                title = label,
-                                selected = selectedMode == hz,
-                                showDivider = index < modes.size - 1,
-                                onClick = {
-                                    selectedMode = hz
-                                    Settings.Global.putInt(cr, "display_refresh_rate_mode", hz)
-                                }
+                    PreferenceGroup {
+                        item {
+                            ListPreference(
+                                title = stringResource(R.string.refresh_rate_mode_title),
+                                options = modes.map { (hz, label) -> hz.toString() to label },
+                                value = selectedMode.toString(),
+                                onValueChange = { value ->
+                                    value.toIntOrNull()?.let { mode ->
+                                        selectedMode = mode
+                                        Settings.Global.putInt(cr, "display_refresh_rate_mode", mode)
+                                    }
+                                },
                             )
+                        }
+
+                        if (selectedMode == 0 && supportedPeakRates.isNotEmpty()) {
+                            item {
+                                ListPreference(
+                                    title = stringResource(R.string.dynamic_peak_refresh_rate_title),
+                                    summary = stringResource(
+                                        R.string.peak_refresh_rate_summary,
+                                        dynamicPeakRefreshRate,
+                                    ),
+                                    options = supportedPeakRates.map { rate ->
+                                        rate.toString() to "${rate}Hz"
+                                    },
+                                    value = dynamicPeakRefreshRate.toString(),
+                                    onValueChange = { value ->
+                                        value.toIntOrNull()?.let { rate ->
+                                            dynamicPeakRefreshRate = rate
+                                            Settings.System.putFloat(
+                                                cr,
+                                                DYNAMIC_PEAK_REFRESH_RATE,
+                                                rate.toFloat(),
+                                            )
+                                        }
+                                    },
+                                )
+                            }
                         }
                     }
                 }
@@ -199,25 +245,32 @@ class RefreshRateSettings : Fragment() {
                     )
                 }
 
-                item {
-                    SettingsGroupCard {
-                        SettingsSwitchItem(
+            item {
+                PreferenceGroup {
+                    item {
+                        SwitchPreference(
                             title = stringResource(R.string.aod_limit_refresh_rate_title),
                             summary = stringResource(R.string.aod_limit_refresh_rate_summary),
                             checked = lockscreenLimitEnabled,
-                            showDivider = true,
-                            onClick = {
-                                lockscreenLimitEnabled = !lockscreenLimitEnabled
-                                Settings.System.putInt(cr, "lockscreen_limit_refresh_rate", if (lockscreenLimitEnabled) 1 else 0)
-                            }
+                            onCheckedChange = { enabled ->
+                                lockscreenLimitEnabled = enabled
+                                Settings.System.putInt(
+                                    cr,
+                                    "lockscreen_limit_refresh_rate",
+                                    if (enabled) 1 else 0
+                                )
+                            },
                         )
-                        SettingsNavigationItem(
+                    }
+                    item {
+                        ClickablePreference(
                             title = stringResource(R.string.per_app_refresh_rate_title),
                             summary = stringResource(R.string.per_app_refresh_rate_summary),
-                            onClick = onNavigateToPerApp
+                            onClick = onNavigateToPerApp,
                         )
                     }
                 }
+            }
             }
         }
     }
@@ -473,19 +526,6 @@ class RefreshRateSettings : Fragment() {
     }
 
     @Composable
-    fun SettingsGroupCard(content: @Composable ColumnScope.() -> Unit) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceBright
-            )
-        ) {
-            Column(content = content)
-        }
-    }
-
-    @Composable
     fun SettingsRadioItem(
         title: String,
         selected: Boolean,
@@ -515,65 +555,6 @@ class RefreshRateSettings : Fragment() {
                     modifier = Modifier.padding(horizontal = 16.dp),
                     thickness = 1.dp,
                     color = MaterialTheme.colorScheme.surfaceContainer
-                )
-            }
-        }
-    }
-
-    @Composable
-    fun SettingsSwitchItem(
-        title: String,
-        summary: String,
-        checked: Boolean,
-        showDivider: Boolean = false,
-        onClick: () -> Unit
-    ) {
-        Column {
-            Surface(
-                onClick = onClick,
-                color = Color.Transparent
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = summary,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            lineHeight = 16.sp
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Switch(
-                        checked = checked,
-                        onCheckedChange = null,
-                        thumbContent = {
-                            Icon(
-                                imageVector = if (checked) Icons.Filled.Check else Icons.Filled.Close,
-                                contentDescription = null,
-                                modifier = Modifier.size(SwitchDefaults.IconSize),
-                            )
-                        }
-                    )
-                }
-            }
-            if (showDivider) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                    thickness = 0.5.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
                 )
             }
         }
@@ -731,35 +712,4 @@ class RefreshRateSettings : Fragment() {
         }
     }
 
-    @Composable
-    fun SettingsNavigationItem(
-        title: String,
-        summary: String,
-        onClick: () -> Unit
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onClick)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = summary,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
 }
