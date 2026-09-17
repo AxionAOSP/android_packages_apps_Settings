@@ -19,10 +19,11 @@ package com.android.settings.applications;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.util.FeatureFlagUtils;
 
-import com.android.settings.SettingsActivity;
 import com.android.settings.applications.appinfo.AppInfoDashboardFragment;
+import com.android.settings.SettingsActivity;
 import com.android.settings.spa.SpaActivity;
 import com.android.settings.spa.app.appinfo.AppInfoSettingsProvider;
 
@@ -35,10 +36,30 @@ public class InstalledAppDetailsTop extends SettingsActivity {
                 !FeatureFlagUtils.isEnabled(this, FeatureFlagUtils.SETTINGS_ENABLE_SPA)) {
             return;
         }
-        Uri data = super.getIntent().getData();
+        Intent intent = super.getIntent();
+        Uri data = intent.getData();
         if (data != null) {
             String packageName = data.getSchemeSpecificPart();
-            String route = AppInfoSettingsProvider.INSTANCE.getRoute(packageName, getUserId());
+            int userId = getUserId();
+            if (intent.hasExtra(Intent.EXTRA_USER_HANDLE)) {
+                UserHandle userHandle = intent.getParcelableExtra(Intent.EXTRA_USER_HANDLE, UserHandle.class);
+                if (userHandle != null) {
+                    userId = userHandle.getIdentifier();
+                }
+            } else if (intent.hasExtra(Intent.EXTRA_USER)) {
+                UserHandle userHandle = intent.getParcelableExtra(Intent.EXTRA_USER, UserHandle.class);
+                if (userHandle != null) {
+                    userId = userHandle.getIdentifier();
+                }
+            } else if (intent.hasExtra(Intent.EXTRA_USER_ID)) {
+                userId = intent.getIntExtra(Intent.EXTRA_USER_ID, userId);
+            } else if (intent.hasExtra("uId")) {
+                int uid = intent.getIntExtra("uId", -1);
+                if (uid != -1) {
+                    userId = UserHandle.getUserId(uid);
+                }
+            }
+            String route = AppInfoSettingsProvider.INSTANCE.getRoute(packageName, userId);
             SpaActivity.startSpaActivity(this, route);
         }
         finish();
