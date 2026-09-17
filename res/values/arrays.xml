@@ -1667,4 +1667,18 @@
         <item>Quick settings</item>
         <item>Lockscreen</item>
     </string-array>
+
+    <string-array name="double_tap_to_sleep_mode_entries">
+        <item>@string/double_tap_to_sleep_mode_disabled</item>
+        <item>@string/double_tap_to_sleep_mode_status_bar</item>
+        <item>@string/double_tap_to_sleep_mode_lockscreen</item>
+        <item>@string/double_tap_to_sleep_mode_all</item>
+    </string-array>
+
+    <string-array name="double_tap_to_sleep_mode_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>

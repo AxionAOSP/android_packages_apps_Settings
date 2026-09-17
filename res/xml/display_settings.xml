@@ -284,12 +284,13 @@
             android:defaultValue="@*lineageos.platform:bool/config_proximityCheckOnWakeEnabledByDefault"
             settings:requiresConfig="@*lineageos.platform:bool/config_proximityCheckOnWake" />
 
-        <!-- Double tap to sleep -->
-        <lineageos.preference.LineageSystemSettingSwitchPreference
-            android:key="double_tap_sleep_gesture"
-            android:title="@string/status_bar_double_tap_to_sleep_title"
-            android:summary="@string/status_bar_double_tap_to_sleep_summary"
-            android:defaultValue="@*lineageos.platform:bool/config_dt2sGestureEnabledByDefault"
+        <com.android.settings.preferences.SecureSettingListPreference
+            android:key="double_tap_to_sleep"
+            android:title="@string/double_tap_to_sleep_title"
+            android:summary="%s"
+            android:entries="@array/double_tap_to_sleep_mode_entries"
+            android:entryValues="@array/double_tap_to_sleep_mode_values"
+            android:defaultValue="3"
             settings:requiresConfig="@*lineageos.platform:bool/config_dt2sGestureAvailable" />
 
         <lineageos.preference.LineageGlobalSettingSwitchPreference
