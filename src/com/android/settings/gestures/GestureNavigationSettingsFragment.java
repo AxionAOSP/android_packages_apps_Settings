@@ -26,7 +26,6 @@ import android.provider.Settings;
 import android.view.WindowManager;
 
 import com.android.settings.R;
-import com.android.settings.core.AbstractPreferenceController;
 import com.android.settings.dashboard.DashboardFragment;
 import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settings.widget.SeekBarPreference;
@@ -35,8 +34,6 @@ import com.android.settingslib.widget.ButtonPreference;
 import com.android.settingslib.widget.SliderPreference;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -79,6 +76,24 @@ public class GestureNavigationSettingsFragment extends DashboardFragment {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         super.onCreatePreferences(savedInstanceState, rootKey);
+
+        final SliderPreference navbarLength = findPreference(
+                GestureNavbarLengthPreferenceController.KEY);
+        if (navbarLength != null) {
+            final int currentMode = Settings.System.getIntForUser(
+                    getActivity().getContentResolver(),
+                    GestureNavbarLengthPreferenceController.KEY,
+                    2,
+                    android.os.UserHandle.USER_CURRENT);
+
+            navbarLength.setValue(currentMode);
+            navbarLength.setOnPreferenceChangeListener((preference, value) ->
+                    Settings.System.putIntForUser(
+                            getActivity().getContentResolver(),
+                            GestureNavbarLengthPreferenceController.KEY,
+                            (Integer) value,
+                            android.os.UserHandle.USER_CURRENT));
+        }
 
         final Resources res = getActivity().getResources();
         mDefaultBackGestureInset = res.getDimensionPixelSize(
@@ -206,14 +221,7 @@ public class GestureNavigationSettingsFragment extends DashboardFragment {
         return floatArray;
     }
 
-    @Override
-    protected List<AbstractPreferenceController> createPreferenceControllers(Context context) {
-        final List<AbstractPreferenceController> controllers = new ArrayList<>();
-        controllers.add(new GestureNavbarLengthPreferenceController(
-                context,
-                GestureNavbarLengthPreferenceController.KEY));
-        return controllers;
-    }
+
 
     public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
             new BaseSearchIndexProvider(R.xml.gesture_navigation_settings) {
