@@ -37,7 +37,6 @@
         android:min="0"
         android:max="4"
         android:defaultValue="2"
-        settings:seekbarIncrement="1" />
 
 <PreferenceCategory
         android:persistent="false">
