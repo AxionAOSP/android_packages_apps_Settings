@@ -26,6 +26,7 @@ import android.provider.Settings;
 import android.view.WindowManager;
 
 import com.android.settings.R;
+import com.android.settings.core.AbstractPreferenceController;
 import com.android.settings.dashboard.DashboardFragment;
 import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settings.widget.SeekBarPreference;
@@ -34,6 +35,8 @@ import com.android.settingslib.widget.ButtonPreference;
 import com.android.settingslib.widget.SliderPreference;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -201,6 +204,15 @@ public class GestureNavigationSettingsFragment extends DashboardFragment {
         }
         array.recycle();
         return floatArray;
+    }
+
+    @Override
+    protected List<AbstractPreferenceController> createPreferenceControllers(Context context) {
+        final List<AbstractPreferenceController> controllers = new ArrayList<>();
+        controllers.add(new GestureNavbarLengthPreferenceController(
+                context,
+                GestureNavbarLengthPreferenceController.KEY));
+        return controllers;
     }
 
     public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
