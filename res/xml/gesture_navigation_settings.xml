@@ -37,8 +37,9 @@
         android:min="0"
         android:max="4"
         android:defaultValue="2"
+        />
 
-<PreferenceCategory
+    <PreferenceCategory
         android:persistent="false">
 
         <com.android.settingslib.widget.ButtonPreference
