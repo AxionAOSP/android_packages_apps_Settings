@@ -77,6 +77,24 @@ public class GestureNavigationSettingsFragment extends DashboardFragment {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         super.onCreatePreferences(savedInstanceState, rootKey);
 
+        final SliderPreference navbarLength = findPreference(
+                GestureNavbarLengthPreferenceController.KEY);
+        if (navbarLength != null) {
+            final int currentMode = Settings.System.getIntForUser(
+                    getActivity().getContentResolver(),
+                    GestureNavbarLengthPreferenceController.KEY,
+                    2,
+                    android.os.UserHandle.USER_CURRENT);
+
+            navbarLength.setValue(currentMode);
+            navbarLength.setOnPreferenceChangeListener((preference, value) ->
+                    Settings.System.putIntForUser(
+                            getActivity().getContentResolver(),
+                            GestureNavbarLengthPreferenceController.KEY,
+                            (Integer) value,
+                            android.os.UserHandle.USER_CURRENT));
+        }
+
         final Resources res = getActivity().getResources();
         mDefaultBackGestureInset = res.getDimensionPixelSize(
                 com.android.internal.R.dimen.config_backGestureInset);
@@ -202,6 +220,8 @@ public class GestureNavigationSettingsFragment extends DashboardFragment {
         array.recycle();
         return floatArray;
     }
+
+
 
     public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
             new BaseSearchIndexProvider(R.xml.gesture_navigation_settings) {

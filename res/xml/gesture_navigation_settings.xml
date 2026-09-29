@@ -31,6 +31,14 @@
         android:defaultValue="true"
         />
 
+        <com.android.settingslib.widget.SliderPreference
+        android:key="gesture_navbar_length_mode"
+        android:title="@string/gesture_navbar_length_title"
+        android:min="0"
+        android:max="4"
+        android:defaultValue="2"
+        />
+
     <PreferenceCategory
         android:persistent="false">
 
