@@ -59,6 +59,7 @@ android_library {
         "VendorSupport/src/**/*.kt",
         "Personalizations/src/**/*.java",
         "Personalizations/src/**/*.kt",
+        ":ax_settings",
     ],
     exclude_srcs: [
         "src/com/android/settings/biometrics/fingerprint2/lib/**/*.kt",
@@ -139,6 +140,8 @@ android_library {
         "ax_compose",
         "ax_deviceinfo",
         "ax_easteregg",
+        "ax_settings_res",
+        "AxionPartsLib",
     ],
 
     plugins: [

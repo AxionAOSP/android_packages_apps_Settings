@@ -148,6 +148,7 @@
             settings:highlightableMenuKey="@string/menu_key_system"/>
 
         <com.android.settings.widget.HomepagePreference
+            android:fragment="com.android.settings.deviceinfo.axion.AxionAboutFragment"
             android:icon="@drawable/ic_homepage_about"
             android:key="top_level_about_device"
             android:order="-10"
